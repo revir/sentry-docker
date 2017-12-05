@@ -5,9 +5,6 @@ services:
 
   postgres:
     image: hub.c.163.com/library/postgres:9.6
-    environment:
-      - POSTGRES_USER=sentry
-      - POSTGRES_PASSWORD=iBO80fG0werjgs
     volumes:
       - pgdata:/var/lib/postgresql/data
 
