@@ -2,11 +2,19 @@ version: "2.3"
 services:
   redis:
     image: hub.c.163.com/library/redis:4.0
+    networks:
+      sentry-net:
+        aliases:
+         - redis
 
   postgres:
     image: hub.c.163.com/library/postgres:9.6
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      sentry-net:
+        aliases:
+         - postgres
 
   sentry:
     image: hub.c.163.com/library/sentry:8.20
@@ -15,26 +23,37 @@ services:
     depends_on:
       - redis
       - postgres
-
+    networks:
+      - sentry-net
+        
   sentry-cron:
     image: hub.c.163.com/library/sentry:8.20
     depends_on:
       - redis
       - postgres
+    networks:
+      - sentry-net
     
   sentry-worker-1:
     image: hub.c.163.com/library/sentry:8.20
     depends_on:
       - redis
       - postgres
+    networks:
+      - sentry-net
   sentry-worker-2:
     image: hub.c.163.com/library/sentry:8.20
     depends_on:
       - redis
       - postgres
+    networks:
+      - sentry-net
 
 volumes:
   pgdata:
     driver: local
+
+networks:
+  sentry-net:
 
   
