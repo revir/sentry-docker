@@ -1,4 +1,16 @@
+docker-compose run --rm -d redis
+docker-compose run --rm -d postgres
 docker-compose run --rm sentry config generate-secret-key
+
 
 docker run --rm --network=sentrydocker_sentry-net -it --env-file=./.env  hub.c.163.com/library/sentry:8.20  upgrade
 
+docker-compose run --name my-sentry sentry 
+
+
+
+
+docker run -d --name sentry-redis hub.c.163.com/library/redis:4.0
+docker run -d --name sentry-postgres -e POSTGRES_PASSWORD=Thess123 -e POSTGRES_USER=sentry hub.c.163.com/library/postgres:9.6
+
+docker run -it --rm -e SENTRY_SECRET_KEY='j%4)*69&%do*)bnss6fx@#=iu6s86=tcqn@d9q@coyaqv_bcs%' --link sentry-postgres:postgres --link sentry-redis:redis hub.c.163.com/library/sentry:8.20 upgrade

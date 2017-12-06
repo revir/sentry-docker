@@ -3,10 +3,8 @@ services:
   redis:
     image: hub.c.163.com/library/redis:4.0
     networks:
-      sentry-net:
-        aliases:
-         - redis
-
+      - sentry-net
+       
   postgres:
     image: hub.c.163.com/library/postgres:9.6
     env_file:
@@ -17,9 +15,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      sentry-net:
-        aliases:
-         - postgres
+      - sentry-net
 
   sentry:
     image: hub.c.163.com/library/sentry:8.20
@@ -35,35 +31,113 @@ services:
       - postgres
     networks:
       - sentry-net
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
         
   sentry-cron:
     image: hub.c.163.com/library/sentry:8.20
+    command: 
+      - run
+      - cron
     env_file:
       - ./.env
+    volumes:
+      - sentryconf:/etc/sentry
+      - sentryfiles:/var/lib/sentry/files
     depends_on:
       - redis
       - postgres
     networks:
       - sentry-net
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
     
   sentry-worker-1:
     image: hub.c.163.com/library/sentry:8.20
+    command:
+      - run
+      - worker
     env_file:
       - ./.env
+    volumes:
+      - sentryconf:/etc/sentry
+      - sentryfiles:/var/lib/sentry/files
     depends_on:
       - redis
       - postgres
     networks:
       - sentry-net
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
   sentry-worker-2:
     image: hub.c.163.com/library/sentry:8.20
+    command:
+      - run
+      - worker
     env_file:
       - ./.env
+    volumes:
+      - sentryconf:/etc/sentry
+      - sentryfiles:/var/lib/sentry/files
     depends_on:
       - redis
       - postgres
     networks:
       - sentry-net
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
+  sentry-worker-3:
+    image: hub.c.163.com/library/sentry:8.20
+    command:
+      - run
+      - worker
+    env_file:
+      - ./.env
+    volumes:
+      - sentryconf:/etc/sentry
+      - sentryfiles:/var/lib/sentry/files
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - sentry-net
+    ulimits:  
+      memlock:
+        soft: -1
+        hard: -1
+
+      nofile:   # It is important to ensure increased ulimits for nofile and nproc are available for the Elasticsearch containers.
+        soft: 65536
+        hard: 65536
+      nproc: 65535
 
 volumes:
   pgdata:
