@@ -9,6 +9,11 @@ services:
 
   postgres:
     image: hub.c.163.com/library/postgres:9.6
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -20,6 +25,10 @@ services:
     image: hub.c.163.com/library/sentry:8.20
     ports: 
       - "9000:9000"
+    env_file:
+      - ./.env
+    volumes:
+      - sentryfiles:/var/lib/sentry/files
     depends_on:
       - redis
       - postgres
@@ -28,6 +37,8 @@ services:
         
   sentry-cron:
     image: hub.c.163.com/library/sentry:8.20
+    env_file:
+      - ./.env
     depends_on:
       - redis
       - postgres
@@ -36,6 +47,8 @@ services:
     
   sentry-worker-1:
     image: hub.c.163.com/library/sentry:8.20
+    env_file:
+      - ./.env
     depends_on:
       - redis
       - postgres
@@ -43,6 +56,8 @@ services:
       - sentry-net
   sentry-worker-2:
     image: hub.c.163.com/library/sentry:8.20
+    env_file:
+      - ./.env
     depends_on:
       - redis
       - postgres
