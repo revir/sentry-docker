@@ -67,6 +67,8 @@ services:
 volumes:
   pgdata:
     driver: local
+  sentryfiles:
+    driver: local
 
 networks:
   sentry-net:
