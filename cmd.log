@@ -1,12 +1,7 @@
-docker-compose run --rm -d redis
-docker-compose run --rm -d postgres
 docker-compose run --rm sentry config generate-secret-key
-
-
 docker run --rm --network=sentrydocker_sentry-net -it --env-file=./.env  hub.c.163.com/library/sentry:8.20  upgrade
 
-docker-compose run --name my-sentry sentry 
-
+docker-compose up
 
 
 
